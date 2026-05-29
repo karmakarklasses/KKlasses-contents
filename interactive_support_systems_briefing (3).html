@@ -1,0 +1,517 @@
+<!-- CONFIRMATION: NEITHER Mermaid JS NOR SVG were used in this file. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Interactive Lab: Simple Permanent Tissues</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .progress-bar-fill {
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes bounce-short {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        .bounce-active {
+            animation: bounce-short 0.5s ease;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-blue-100 p-0 sm:p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto bg-white min-h-screen sm:min-h-0 sm:rounded-3xl shadow-2xl flex flex-col justify-between overflow-hidden border border-slate-200">
+        
+        <div>
+            <header class="bg-gradient-to-r from-blue-900 to-indigo-950 text-white p-6 md:p-8 border-b-4 border-emerald-500">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                    <div>
+                        <span class="bg-emerald-500/20 text-emerald-300 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border border-emerald-500/30">
+                            Video 3 Companion Guide
+                        </span>
+                        <h1 class="text-2xl md:text-3xl font-black mt-2 tracking-tight">Plant Support Tissues</h1>
+                    </div>
+                    <p class="text-slate-300 text-xs sm:text-sm max-w-sm font-light">
+                        Explore plant cells under our microscope lens, compare their mechanical strengths, and test your knowledge.
+                    </p>
+                </div>
+            </header>
+
+            <main class="p-4 md:p-8">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start">
+                    
+                    <div class="md:col-span-6 space-y-6">
+                        <section class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
+                                1. Specimen Viewer
+                            </h2>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mb-4">
+                                <button onclick="selectSpecimen('parenchyma')" id="tab-parenchyma" class="py-2 px-1 rounded-xl text-xs font-bold transition border text-center whitespace-nowrap">
+                                    Parenchyma
+                                </button>
+                                <button onclick="selectSpecimen('collenchyma')" id="tab-collenchyma" class="py-2 px-1 rounded-xl text-xs font-bold transition border text-center whitespace-nowrap">
+                                    Collenchyma
+                                </button>
+                                <button onclick="selectSpecimen('sclerenchyma')" id="tab-sclerenchyma" class="py-2 px-1 rounded-xl text-xs font-bold transition border text-center whitespace-nowrap">
+                                    Sclerenchyma
+                                </button>
+                                <button onclick="selectSpecimen('stomata')" id="tab-stomata" class="py-2 px-1 rounded-xl text-xs font-bold transition border text-center whitespace-nowrap">
+                                    Stomata
+                                </button>
+                            </div>
+
+                            <div class="relative bg-slate-950 rounded-xl overflow-hidden aspect-video w-full flex items-center justify-center p-1 shadow-inner border border-slate-300">
+                                <canvas id="specimenCanvas" class="w-full h-full bg-slate-950 rounded-lg"></canvas>
+                                <div class="absolute bottom-2 right-2 bg-black/60 px-2 py-0.5 rounded text-[9px] text-white font-mono">
+                                    Scale: 20 µm
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
+                                3. Rapid Quiz
+                            </h2>
+                            <p class="text-[11px] text-slate-500 mb-4">Tap the correct option to lock in your answer.</p>
+
+                            <div class="space-y-4">
+                                <div class="bg-white p-3.5 rounded-xl border border-slate-200 flex flex-col justify-between min-h-[110px] transition-all duration-300">
+                                    <span class="text-[10px] text-blue-600 font-bold uppercase tracking-wider block mb-1">Pectin Corners</span>
+                                    <h4 class="text-xs font-bold text-slate-800 mb-3">Which tissue features cells irregularly thickened at the corners with pectin?</h4>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button onclick="handleQuiz(this, 'correct')" class="bg-slate-50 border border-slate-200 hover:bg-slate-100 text-xs font-semibold py-2 px-3 rounded-lg transition text-center">Collenchyma</button>
+                                        <button onclick="handleQuiz(this, 'wrong')" class="bg-slate-50 border border-slate-200 hover:bg-slate-100 text-xs font-semibold py-2 px-3 rounded-lg transition text-center">Sclerenchyma</button>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white p-3.5 rounded-xl border border-slate-200 flex flex-col justify-between min-h-[110px] transition-all duration-300">
+                                    <span class="text-[10px] text-red-600 font-bold uppercase tracking-wider block mb-1">Lignified Walls</span>
+                                    <h4 class="text-xs font-bold text-slate-800 mb-3">Sclerenchyma provides extreme support. What is the living state of these cells?</h4>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button onclick="handleQuiz(this, 'wrong')" class="bg-slate-50 border border-slate-200 hover:bg-slate-100 text-xs font-semibold py-2 px-3 rounded-lg transition text-center">Living</button>
+                                        <button onclick="handleQuiz(this, 'correct')" class="bg-slate-50 border border-slate-200 hover:bg-slate-100 text-xs font-semibold py-2 px-3 rounded-lg transition text-center">Dead</button>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white p-3.5 rounded-xl border border-slate-200 flex flex-col justify-between min-h-[110px] transition-all duration-300">
+                                    <span class="text-[10px] text-emerald-600 font-bold uppercase tracking-wider block mb-1">Aerenchyma</span>
+                                    <h4 class="text-xs font-bold text-slate-800 mb-3">What primary adaptive advantage does Aerenchyma offer to aquatic plants?</h4>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button onclick="handleQuiz(this, 'correct')" class="bg-slate-50 border border-slate-200 hover:bg-slate-100 text-xs font-semibold py-2 px-3 rounded-lg transition text-center">Buoyancy</button>
+                                        <button onclick="handleQuiz(this, 'wrong')" class="bg-slate-50 border border-slate-200 hover:bg-slate-100 text-xs font-semibold py-2 px-3 rounded-lg transition text-center">Flexibility</button>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white p-3.5 rounded-xl border border-slate-200 flex flex-col justify-between min-h-[110px] transition-all duration-300">
+                                    <span class="text-[10px] text-amber-600 font-bold uppercase tracking-wider block mb-1">Suberin</span>
+                                    <h4 class="text-xs font-bold text-slate-800 mb-3">Which waterproof defensive layer is heavily coated with Suberin?</h4>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button onclick="handleQuiz(this, 'correct')" class="bg-slate-50 border border-slate-200 hover:bg-slate-100 text-xs font-semibold py-2 px-3 rounded-lg transition text-center">Cork (Bark)</button>
+                                        <button onclick="handleQuiz(this, 'wrong')" class="bg-slate-50 border border-slate-200 hover:bg-slate-100 text-xs font-semibold py-2 px-3 rounded-lg transition text-center">Epidermis</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div class="md:col-span-6 space-y-6">
+                        <section id="infoBox" class="bg-white p-5 rounded-2xl border-2 transition-all duration-300">
+                            <div class="flex justify-between items-center mb-3">
+                                <span id="specimenAnalogy" class="text-[9px] uppercase font-black tracking-wider px-2 py-1 rounded bg-slate-100 text-slate-600">
+                                    Analogy
+                                </span>
+                                <span id="specimenState" class="text-[10px] font-bold px-2.5 py-1 rounded-full">
+                                    State
+                                </span>
+                            </div>
+                            <h3 id="specimenName" class="text-xl font-bold text-slate-950 mb-2">Tissue Name</h3>
+                            <p id="specimenDesc" class="text-xs md:text-sm text-slate-600 leading-relaxed mb-6"></p>
+
+                            <div class="pt-4 border-t border-slate-100 space-y-4">
+                                <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Cell Superpowers</h4>
+                                
+                                <div>
+                                    <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                                        <span>Mechanical Strength (Armor)</span>
+                                        <span id="meterStrengthVal" class="text-slate-900">0%</span>
+                                    </div>
+                                    <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                                        <div id="meterStrength" class="h-full bg-red-500 progress-bar-fill" style="width: 0%"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                                        <span>Flexibility (Bending)</span>
+                                        <span id="meterFlexVal" class="text-slate-900">0%</span>
+                                    </div>
+                                    <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                                        <div id="meterFlex" class="h-full bg-amber-500 progress-bar-fill" style="width: 0%"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                                        <span>Storage Space (Food/Water)</span>
+                                        <span id="meterStorageVal" class="text-slate-900">0%</span>
+                                    </div>
+                                    <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                                        <div id="meterStorage" class="h-full bg-emerald-500 progress-bar-fill" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+
+        <footer class="bg-slate-100 text-slate-500 text-[10px] text-center py-4 border-t border-slate-200">
+            Class 9 Biology • Optimized for Mobile & Desktop
+        </footer>
+
+    </div>
+
+    <script>
+        const specimens = {
+            parenchyma: {
+                name: "Parenchyma",
+                analogy: "The Cushion & Cupboard",
+                state: "Living Cells",
+                stateColor: "bg-emerald-100 text-emerald-800 border-emerald-200",
+                description: "The basic ground tissue of plants. Cells have thin, simple cellulose walls and are loosely packed with large spaces between them. They act as soft cushions and biological storage units.",
+                accentColor: "border-emerald-500",
+                meters: { strength: 20, flex: 30, storage: 100 }
+            },
+            collenchyma: {
+                name: "Collenchyma",
+                analogy: "The Flexible Bungee",
+                state: "Living Cells",
+                stateColor: "bg-amber-100 text-amber-800 border-amber-200",
+                description: "This tissue allows plant parts to bend easily without breaking. The cells are living, elongated, and irregularly thickened with cellulose and pectin specifically at their corners.",
+                accentColor: "border-amber-500",
+                meters: { strength: 70, flex: 100, storage: 20 }
+            },
+            sclerenchyma: {
+                name: "Sclerenchyma",
+                analogy: "The Rigid Armor",
+                state: "Dead Cells",
+                stateColor: "bg-red-100 text-red-800 border-red-200",
+                description: "The rigid skeleton that makes plants hard. Cells are dead, extremely long and narrow, with cell walls heavily thickened with a highly solid natural cement called lignin.",
+                accentColor: "border-red-500",
+                meters: { strength: 100, flex: 10, storage: 0 }
+            },
+            stomata: {
+                name: "Epidermis & Stomata",
+                analogy: "The Cellular Wrapping",
+                state: "Living Cells",
+                stateColor: "bg-blue-100 text-blue-800 border-blue-200",
+                description: "The protective layer covering leaves and stems. Waxy cutin stops water loss, while kidney-shaped Guard Cells open and close the stomatal pores to let the plant breathe.",
+                accentColor: "border-blue-500",
+                meters: { strength: 40, flex: 50, storage: 40 }
+            }
+        };
+
+        let activeSpecimen = 'parenchyma';
+        const canvas = document.getElementById('specimenCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth * window.devicePixelRatio;
+            canvas.height = canvas.parentElement.clientHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            drawSpecimen();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        function selectSpecimen(key) {
+            activeSpecimen = key;
+
+            document.querySelectorAll('.grid button').forEach(btn => {
+                if(btn.id && btn.id.startsWith('tab-')) {
+                    btn.className = "py-2 px-1 rounded-xl text-xs font-bold transition border text-center bg-white border-slate-200 text-slate-600 whitespace-nowrap";
+                }
+            });
+
+            const activeBtn = document.getElementById(`tab-${key}`);
+            if (key === 'parenchyma') {
+                activeBtn.className = "py-2 px-1 rounded-xl text-xs font-bold transition border text-center bg-emerald-500 border-emerald-600 text-white shadow-sm whitespace-nowrap";
+            } else if (key === 'collenchyma') {
+                activeBtn.className = "py-2 px-1 rounded-xl text-xs font-bold transition border text-center bg-amber-500 border-amber-600 text-white shadow-sm whitespace-nowrap";
+            } else if (key === 'sclerenchyma') {
+                activeBtn.className = "py-2 px-1 rounded-xl text-xs font-bold transition border text-center bg-red-500 border-red-600 text-white shadow-sm whitespace-nowrap";
+            } else {
+                activeBtn.className = "py-2 px-1 rounded-xl text-xs font-bold transition border text-center bg-blue-500 border-blue-600 text-white shadow-sm whitespace-nowrap";
+            }
+
+            const data = specimens[key];
+            const infoBox = document.getElementById('infoBox');
+            infoBox.className = `bg-white p-5 rounded-2xl border-2 transition-all duration-300 ${data.accentColor}`;
+
+            document.getElementById('specimenName').innerText = data.name;
+            document.getElementById('specimenAnalogy').innerText = data.analogy;
+            document.getElementById('specimenDesc').innerText = data.description;
+            
+            const stateIndicator = document.getElementById('specimenState');
+            stateIndicator.innerText = data.state;
+            stateIndicator.className = `text-[10px] font-bold px-2.5 py-1 rounded-full ${data.stateColor}`;
+
+            animateMeters(data.meters);
+            drawSpecimen();
+        }
+
+        function animateMeters(values) {
+            const items = ['strength', 'flex', 'storage'];
+            items.forEach(item => {
+                const percent = values[item];
+                const key = item.charAt(0).toUpperCase() + item.slice(1);
+                const bar = document.getElementById(`meter${key}`);
+                const valLabel = document.getElementById(`meter${key}Val`);
+                
+                bar.style.width = percent + '%';
+                valLabel.innerText = percent + '%';
+            });
+        }
+
+        function drawSpecimen() {
+            const w = canvas.width / window.devicePixelRatio;
+            const h = canvas.height / window.devicePixelRatio;
+            ctx.clearRect(0, 0, w, h);
+
+            if (activeSpecimen === 'parenchyma') {
+                drawParenchyma(w, h);
+            } else if (activeSpecimen === 'collenchyma') {
+                drawCollenchyma(w, h);
+            } else if (activeSpecimen === 'sclerenchyma') {
+                drawSclerenchyma(w, h);
+            } else if (activeSpecimen === 'stomata') {
+                drawStomata(w, h);
+            }
+        }
+
+        function drawParenchyma(w, h) {
+            const cx = w / 2;
+            const cy = h / 2;
+            const scale = Math.min(w, h) / 200;
+            const points = [
+                {x: cx - 45 * scale, y: cy - 25 * scale, r: 24 * scale},
+                {x: cx + 10 * scale, y: cy - 28 * scale, r: 26 * scale},
+                {x: cx - 50 * scale, y: cy + 20 * scale, r: 22 * scale},
+                {x: cx, y: cy + 22 * scale, r: 25 * scale},
+                {x: cx + 48 * scale, y: cy + 5 * scale, r: 23 * scale},
+                {x: cx - 10 * scale, y: cy - 5 * scale, r: 18 * scale}
+            ];
+
+            points.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.strokeStyle = '#10B981';
+                ctx.lineWidth = 1.5;
+                ctx.fillStyle = '#ECFDF5';
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r * 0.5, 0, Math.PI * 2);
+                ctx.fillStyle = '#E0F2FE';
+                ctx.strokeStyle = '#38BDF8';
+                ctx.lineWidth = 0.5;
+                ctx.fill();
+                ctx.stroke();
+
+                for (let i = 0; i < 3; i++) {
+                    const angle = (i * Math.PI * 2) / 3;
+                    const dx = p.x + Math.cos(angle) * (p.r * 0.7);
+                    const dy = p.y + Math.sin(angle) * (p.r * 0.7);
+                    ctx.beginPath();
+                    ctx.arc(dx, dy, 2 * scale, 0, Math.PI * 2);
+                    ctx.fillStyle = '#059669';
+                    ctx.fill();
+                }
+            });
+        }
+
+        function drawCollenchyma(w, h) {
+            const cx = w / 2;
+            const cy = h / 2;
+            const scale = Math.min(w, h) / 200;
+            const cells = [
+                [
+                    {x: cx - 30 * scale, y: cy - 35 * scale}, {x: cx + 15 * scale, y: cy - 35 * scale},
+                    {x: cx + 35 * scale, y: cy - 5 * scale}, {x: cx + 15 * scale, y: cy + 25 * scale},
+                    {x: cx - 30 * scale, y: cy + 25 * scale}, {x: cx - 50 * scale, y: cy - 5 * scale}
+                ],
+                [
+                    {x: cx + 15 * scale, y: cy - 35 * scale}, {x: cx + 60 * scale, y: cy - 35 * scale},
+                    {x: cx + 80 * scale, y: cy - 5 * scale}, {x: cx + 60 * scale, y: cy + 25 * scale},
+                    {x: cx + 35 * scale, y: cy - 5 * scale}
+                ],
+                [
+                    {x: cx - 30 * scale, y: cy + 25 * scale}, {x: cx + 15 * scale, y: cy + 25 * scale},
+                    {x: cx + 35 * scale, y: cy + 55 * scale}, {x: cx - 10 * scale, y: cy + 55 * scale},
+                    {x: cx - 50 * scale, y: cy + 25 * scale}
+                ]
+            ];
+
+            cells.forEach(cell => {
+                ctx.beginPath();
+                ctx.moveTo(cell[0].x, cell[0].y);
+                for(let i = 1; i < cell.length; i++) {
+                    ctx.lineTo(cell[i].x, cell[i].y);
+                }
+                ctx.closePath();
+                ctx.strokeStyle = '#D97706';
+                ctx.lineWidth = 1;
+                ctx.fillStyle = '#FEF3C7';
+                ctx.fill();
+                ctx.stroke();
+            });
+
+            const corners = [
+                {x: cx - 30 * scale, y: cy - 35 * scale}, {x: cx + 15 * scale, y: cy - 35 * scale},
+                {x: cx + 35 * scale, y: cy - 5 * scale}, {x: cx + 15 * scale, y: cy + 25 * scale},
+                {x: cx - 30 * scale, y: cy + 25 * scale}, {x: cx - 50 * scale, y: cy - 5 * scale},
+                {x: cx + 60 * scale, y: cy - 35 * scale}, {x: cx + 80 * scale, y: cy - 5 * scale},
+                {x: cx + 60 * scale, y: cy + 25 * scale}, {x: cx + 35 * scale, y: cy + 55 * scale},
+                {x: cx - 10 * scale, y: cy + 55 * scale}
+            ];
+
+            corners.forEach(corner => {
+                ctx.beginPath();
+                ctx.arc(corner.x, corner.y, 5 * scale, 0, Math.PI * 2);
+                ctx.fillStyle = '#B45309';
+                ctx.fill();
+            });
+        }
+
+        function drawSclerenchyma(w, h) {
+            const cx = w / 2;
+            const cy = h / 2;
+            const scale = Math.min(w, h) / 200;
+            const spots = [
+                {x: cx - 35 * scale, y: cy - 20 * scale},
+                {x: cx + 10 * scale, y: cy - 20 * scale},
+                {x: cx - 55 * scale, y: cy + 15 * scale},
+                {x: cx - 10 * scale, y: cy + 15 * scale},
+                {x: cx + 35 * scale, y: cy + 15 * scale}
+            ];
+
+            spots.forEach(c => {
+                ctx.beginPath();
+                drawHexagon(c.x, c.y, 24 * scale);
+                ctx.fillStyle = '#FEE2E2';
+                ctx.strokeStyle = '#EF4444';
+                ctx.lineWidth = 2;
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                drawHexagon(c.x, c.y, 16 * scale);
+                ctx.fillStyle = '#EF4444';
+                ctx.fill();
+
+                ctx.beginPath();
+                drawHexagon(c.x, c.y, 4 * scale);
+                ctx.fillStyle = '#0f172a';
+                ctx.fill();
+            });
+        }
+
+        function drawHexagon(x, y, radius) {
+            ctx.moveTo(x + radius * Math.cos(0), y + radius * Math.sin(0));
+            for (let i = 1; i <= 6; i++) {
+                ctx.lineTo(x + radius * Math.cos((i * 2 * Math.PI) / 6), y + radius * Math.sin((i * 2 * Math.PI) / 6));
+            }
+        }
+
+        // Draw Epidermis & Kidney-Shaped Guard Cells
+        function drawStomata(w, h) {
+            const cx = w / 2;
+            const cy = h / 2;
+            const scale = Math.min(w, h) / 200;
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#93C5FD';
+            ctx.lineWidth = 1;
+            ctx.fillStyle = '#EFF6FF';
+            ctx.arc(cx - 55 * scale, cy - 40 * scale, 30 * scale, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(cx + 55 * scale, cy + 40 * scale, 30 * scale, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(cx - 8 * scale, cy, 20 * scale, Math.PI * 1.5, Math.PI * 0.5, true);
+            ctx.quadraticCurveTo(cx - 4 * scale, cy, cx - 8 * scale, cy - 20 * scale);
+            ctx.fillStyle = '#10B981';
+            ctx.strokeStyle = '#047857';
+            ctx.lineWidth = 1.5;
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(cx + 8 * scale, cy, 20 * scale, Math.PI * 1.5, Math.PI * 0.5, false);
+            ctx.quadraticCurveTo(cx + 4 * scale, cy, cx + 8 * scale, cy - 20 * scale);
+            ctx.fillStyle = '#10B981';
+            ctx.strokeStyle = '#047857';
+            ctx.lineWidth = 1.5;
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.ellipse(cx, cy, 3 * scale, 12 * scale, 0, 0, Math.PI * 2);
+            ctx.fillStyle = '#111827';
+            ctx.fill();
+
+            const dots = [
+                {x: cx - 12 * scale, y: cy - 10 * scale}, {x: cx - 15 * scale, y: cy}, {x: cx - 12 * scale, y: cy + 10 * scale},
+                {x: cx + 12 * scale, y: cy - 10 * scale}, {x: cx + 15 * scale, y: cy}, {x: cx + 12 * scale, y: cy + 10 * scale}
+            ];
+
+            dots.forEach(d => {
+                ctx.beginPath();
+                ctx.arc(d.x, d.y, 2 * scale, 0, Math.PI * 2);
+                ctx.fillStyle = '#065F46';
+                ctx.fill();
+            });
+        }
+
+        function handleQuiz(btn, state) {
+            const block = btn.parentElement.parentElement;
+            if (state === 'correct') {
+                block.className = "bg-emerald-50 p-3.5 rounded-xl border-2 border-emerald-500 flex flex-col justify-between min-h-[110px] transition-all duration-300 shadow-sm";
+                btn.className = "bg-emerald-600 text-white text-xs font-bold py-2 px-3 rounded-lg w-full cursor-default";
+                const sibling = btn.nextElementSibling || btn.previousElementSibling;
+                if (sibling) sibling.className = "hidden";
+            } else {
+                block.classList.add('bounce-active');
+                block.className = "bg-red-50 p-3.5 rounded-xl border-2 border-red-500 flex flex-col justify-between min-h-[110px] transition-all duration-300";
+                btn.className = "bg-red-200 text-red-800 text-xs font-semibold py-2 px-3 rounded-lg w-full cursor-default";
+                setTimeout(() => {
+                    block.classList.remove('bounce-active');
+                    block.className = "bg-white p-3.5 rounded-xl border border-slate-200 flex flex-col justify-between min-h-[110px] transition-all duration-300";
+                    btn.className = "bg-slate-50 border border-slate-200 hover:bg-slate-100 text-xs font-semibold py-2 px-3 rounded-lg transition text-center";
+                }, 1200);
+            }
+        }
+
+        window.onload = function() {
+            resizeCanvas();
+            selectSpecimen('parenchyma');
+        };
+    </script>
+</body>
+</html>
